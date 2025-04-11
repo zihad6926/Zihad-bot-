@@ -1,7 +1,6 @@
 module.exports = {
 	config: {
-		name: "u",
-		aliases: ["r", "uns", "un", "uns", "unsef", "unsent"],
+		name: "uns",
 		version: "1.2",
 		author: "NTKhang",
 		countDown: 5,
@@ -22,7 +21,7 @@ module.exports = {
 			syntaxError: "Vui lòng reply tin nhắn muốn gỡ của bot"
 		},
 		en: {
-			syntaxError: "Please reply the message you want to unsend"
+			syntaxError: "📢| 𝙿𝚕𝚎𝚊𝚜𝚎 𝚁𝚎𝚙𝚕𝚢 𝚃𝚑𝚎 𝙼𝚊𝚜𝚜𝚊𝚐𝚎 𝚈𝚘𝚞 𝚆𝚊𝚗𝚝 𝚃𝚘 𝚄𝚗𝚜𝚎𝚗𝚍..🌷"
 		}
 	},
 
