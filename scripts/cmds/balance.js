@@ -1,4 +1,4 @@
-?cmd install ba1l.js module.exports = {
+module.exports = {
 	config: {
 		name: "balance",
 		aliases: ["bal"],
