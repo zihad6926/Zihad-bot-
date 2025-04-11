@@ -1,70 +1,69 @@
-const fs = require('fs');
-const moment = require('moment-timezone');
-
 module.exports = {
-	config: {
-		name: "owner",
-		version: "1.0",
-		author: "NTKhang",
-		countDown: 20,
-		role: 0,
-		shortDescription: { vi: "", en: "" },
-		longDescription: { vi: "", en: "" },
-		category: "owner",
-		guide: { en: "" },
-		envConfig: {}
-	},
-	onStart: async function ({ message }) {
-		const authorName = " ZIHAD ッ ";
-		const ownAge = "『 21 』";
-		const messenger = "https://m.me/xxn.zihad";
-		const authorFB = "https://www.facebook.com/xxn.zihad";
-		const authorNumber = "এইটা পার্সোনাল";
-		const Status = "complicated";
-		const urls = [
-"https://i.imgur.com/eUyiv0B.jpeg"];
-		const link = urls[Math.floor(Math.random() * urls.length)];
-		const now = moment().tz('Asia/Jakarta');
-		const date = now.format('MMMM Do YYYY');
-		const time = now.format('h:mm:ss A');
-		const uptime = process.uptime();
-		const seconds = Math.floor(uptime % 60);
-		const minutes = Math.floor((uptime / 60) % 60);
-		const hours = Math.floor((uptime / (60 * 60)) % 24);
-		const days = Math.floor(uptime / (60 * 60 * 24));
-		const uptimeString = `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+  config: {
+    name: "info",
+    version: "1.0",
+    author: "RANA", //Don't change the credit because I made it. Any problems to contact me. https://facebook.com/100063487970328
+    countDown: 5,
+    role: 0,
+    shortDescription: "Admin & Info",
+    longDescription: "Bot Owner Information",
+    category: "info",
+  },
 
-		message.reply({
-			body: `💫《 ⩸__𝐁𝐨𝐭 𝐀𝐧𝐝 𝐎𝐰𝐧𝐞𝐫 𝐈𝐧𝐟𝐨𝐫𝐦𝐚𝐭𝐢𝐨𝐧__⩸ 》💫
-\🤖彡𝐵𝑜𝑡 𝑁𝑎𝑚𝑒 : ⩸__${global.GoatBot.config.nickNameBot}__⩸
+  onStart: async function ({ event, message, usersData, threadsData }) {
+  
+      // ইউজার ও থ্রেডের তথ্য সংগ্রহ
+      const userData = await usersData.get(event.senderID);
+      const userName = userData.name;
 
-\👾彡𝐵𝑜𝑡 𝑆𝑦𝑠𝑡𝑒𝑚 𝑃𝑟𝑒𝑓𝑖𝑥 : ${global.GoatBot.config.prefix}
+      const threadData = await threadsData.get(event.threadID);
+      const threadName = threadData.threadName;
 
-\💙彡𝑂𝑤𝑛𝑒𝑟 𝑁𝑎𝑚𝑒 : ZIHAD AHMED
+      // তারিখ ও সময় সংগ্রহ
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString("en-US", {
+        year: "numeric", 
+        month: "long", 
+        day: "numeric"
+      });
 
-\📝彡𝐴𝑔𝑒  : ${ownAge}
+      const formattedTime = currentDate.toLocaleTimeString("en-US", {
+        timeZone: "Asia/Dhaka",
+        hour12: true,
+      });
 
-\💕彡𝑅𝑒𝑙𝑎𝑡𝑖𝑜𝑛𝑆ℎ𝑖𝑝: ${Status}
+      // এডমিনের ছবি URL
+      const adminImageURL = `https://graph.facebook.com/100067540204855/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
 
-\🌐彡𝑊𝑝 : 01876250734
+      // মেসেজ টেমপ্লেট
+      const infoMessage = `
+‎╭──────────────────⊙
+‎│  𝗔𝗦𝗦𝗔𝗟𝗔𝗠𝗨 𝗪𝗔𝗟𝗔𝗜𝗞𝗨𝗠🌺🌻
+‎├──────────────────❖
+‎├──❯ 𝗢𝘄𝗻𝗲𝗿 𝗜𝗻𝗳𝗼 ♐
+‎├‣ 📌 𝙽𝙰𝙽𝙴 : 𝙼𝙾𝙷𝙰𝙼𝙼𝙰𝙳 𝚉𝙸𝙷𝙰𝙳
+‎├‣📍𝙰𝙳𝙳𝚁𝙴𝚂𝚂 : 𝙱𝙷𝚄𝙰𝙿𝚄𝚁
+‎│  
+‎├──❯ 𝗖𝗢𝗡𝗧𝗔𝗖𝗧  🔗 
+‎├‣ 🏷️ 𝙵𝙱  : facebook.com/xxn.zihad
+‎├‣ 📢 𝚃𝙶  : t.me/xxn.zihad
+‎├‣ 💬 𝙼𝚂𝙶 : m.me/xxn.zihad
+‎│
+‎├──❯ 𝗕𝗢𝗧 𝗜𝗡𝗙𝗢  🤖
+‎├‣ 🔰 𝙱𝙾𝚃 𝙿𝚁𝙴𝙵𝙸𝚇 : [ ? ]
+‎├‣ ⚡ 𝙱𝙾𝚃 𝙽𝙰𝙽𝙴 : 𝙼𝙸𝙼 𝙱𝙾𝚃
+‎│  
+‎├──❯ 𝗚𝗖 𝗜𝗡𝗙𝗢 
+‎├‣ 🎭 𝙶𝙲 𝙽𝙰𝙼𝙴 :${threadName}
+‎├‣ ⏳ 𝚃𝙸𝙼𝙴 : ${formattedTime}  
+‎├──────────────────❖
+‎│ 🙏 𝗧𝗛𝗔𝗡𝗞𝗦 𝗙𝗢𝗥 𝗨𝗦𝗜𝗡𝗚  
+‎╰──────────────────⊙`;
 
-\🌍彡𝐹𝑎𝑐𝑒𝑏𝑜𝑜𝑘 𝐿𝑖𝑛𝑘 : https://www.facebook.com/xxn.zihad
-
-\🗓彡𝐷𝑎𝑡𝑒 : ${date}
-
-
-\⏰彡𝑁𝑜𝑤 𝑇𝑖𝑚𝑒 : ${time}
-
-\🔰彡𝐴𝑛𝑦 𝐻𝑒𝑙𝑝 𝐶𝑜𝑛𝑡𝑎𝑐𝑡 :⩸__${messenger}__⩸
-
-\📛彡𝐵𝑜𝑡 𝐼𝑠 𝑅𝑢𝑛𝑛𝑖𝑛𝑔 𝐹𝑜𝑟 : ${uptimeString}
-\===============`,
-			attachment: await global.utils.getStreamFromURL(link)
-		});
-	},
-	onChat: async function ({ event, message, getLang }) {
-		if (event.body && event.body.toLowerCase() === "info") {
-			this.onStart({ message });
-		}
-	}
+      // মেসেজ পাঠানো
+      message.reply({
+        body: infoMessage,
+        attachment: await global.utils.getStreamFromURL(adminImageURL)
+      });
+  }
 };
