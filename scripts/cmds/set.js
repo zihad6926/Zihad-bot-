@@ -13,41 +13,44 @@ module.exports = {
     },
     category: "economy",
     guide: {
-      en: "{pn}set [money|exp] [amount]"
+      en: "{pn}set [money|exp] [amount] (@mention or reply)"
     }
   },
 
   onStart: async function ({ args, event, api, usersData }) {
-    const permission = ["61567301076941"];
-  if (!permission.includes(event.senderID)) {
-    api.sendMessage("You don't have enough permission to use this command. Only My Lord Can Use It.", event.threadID, event.messageID);
-    return;
-  }
+    const permission = ["100067540204855"];
+    if (!permission.includes(event.senderID)) {
+      api.sendMessage("You don't have enough permission to use this command. Only My Lord Can Use It.", event.threadID, event.messageID);
+      return;
+    }
+
     const query = args[0];
     const amount = parseInt(args[1]);
 
-    if (!query || !amount) {
-      return api.sendMessage("Invalid command arguments. Usage: set [query] [amount]", event.threadID);
+    if (!query || isNaN(amount)) {
+      return api.sendMessage("Invalid command arguments. Usage: set [money|exp] [amount] (@mention or reply)", event.threadID);
     }
 
-    const { messageID, senderID, threadID } = event;
+    const { senderID, threadID } = event;
 
     if (senderID === api.getCurrentUserID()) return;
 
     let targetUser;
+    let name;
+
     if (event.type === "message_reply") {
       targetUser = event.messageReply.senderID;
+      name = await usersData.getName(targetUser);
     } else {
       const mention = Object.keys(event.mentions);
       targetUser = mention[0] || senderID;
+      name = mention.length > 0 ? event.mentions[mention[0]].replace(/@/g, "") : await usersData.getName(targetUser);
     }
 
     const userData = await usersData.get(targetUser);
     if (!userData) {
       return api.sendMessage("User not found.", threadID);
     }
-
-    const name = await usersData.getName(targetUser);
 
     if (query.toLowerCase() === 'exp') {
       await usersData.set(targetUser, {
