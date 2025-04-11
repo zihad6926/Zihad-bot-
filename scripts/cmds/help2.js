@@ -30,7 +30,7 @@ const bold = {
  
 module.exports = {
   config: {
-    name: "help",
+    name: "help2",
     version: "1.18",
     author: "𝖠𝗋𝖸𝖺𝗇 🐔",
     countDown: 5,
