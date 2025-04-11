@@ -7,7 +7,7 @@ const doNotDelete = "[ 𝗭𝗜𝗛𝗔𝗗 ]"; // changing this wont change the
 
 module.exports = {
 	config: {
-		name: "help",
+		name: "help0",
 		version: "1.17",
 		author: "NTKhang", // original author Kshitiz 
 		countDown: 5,
