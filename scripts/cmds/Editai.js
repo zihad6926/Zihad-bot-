@@ -1,117 +1,81 @@
-const axios = require('axios');
-const dipto = "https://www.noobs-api.rf.gd/dipto";
+const fs = require("fs");
+const path = require("path");
+const axios = require("axios");
 
-module.exports.config = {
+module.exports = {
+  config: {
     name: "edit",
-    version: "6.9",
-    author: "dipto",
-    countDown: 5,
+    aliases: ["imgedit"],
+    author: "Mahi--",
+    version: "1.0",
+    cooldowns: 20,
     role: 0,
-    category: "AI",
-    description: "Edit images using Edit AI",
-    guide: {
-        en: "Reply to an image with {pn} [prompt]"
-    }
-};
+    shortDescription: "Edit image with text prompt",
+    longDescription: "Edits an image using the provided text prompt and image link or replied image",
+    category: "image",
+    guide: "{p}edit <prompt> (reply to image) or {p}edit <image_url> <prompt>",
+  },
 
-async function handleEdit(api, event, args, commandName) {
-    const url = event.messageReply?.attachments[0]?.url;
-    const prompt = args.join(" ") || "What is this";
-
-    if (!url) {
-        return api.sendMessage("❌ Please reply to an image to edit it.", event.threadID, event.messageID);
+  onStart: async function ({ message, args, api, event }) {
+    // Obfuscated author name check
+    const obfuscatedAuthor = String.fromCharCode(77, 97, 104, 105, 45, 45);
+    if (this.config.author !== obfuscatedAuthor) {
+      return api.sendMessage(
+        "You are not authorized to change the author name.",
+        event.threadID,
+        event.messageID
+      );
     }
+
+    // Get image URL and prompt
+    let imageUrl, prompt;
+
+    if (event.messageReply && event.messageReply.attachments.length > 0) {
+      // Case: Reply to an image with prompt in arguments
+      imageUrl = event.messageReply.attachments[0].url;
+      prompt = args.join(" ");
+    } else if (args.length >= 2) {
+      // Case: Image URL and prompt provided as arguments
+      imageUrl = args[0];
+      prompt = args.slice(1).join(" ");
+    } else {
+      return api.sendMessage(
+        "❌ | Invalid format. Use:\n• Reply to an image with '?edit <prompt>'\n• Or '?edit <image_url> <prompt>'",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    if (!prompt) {
+      return api.sendMessage(
+        "❌ | Please provide a text prompt for the image editing.",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    api.sendMessage("🔄 | Editing your image, please wait...", event.threadID, event.messageID);
 
     try {
-        const response = await axios.get(`${dipto}/edit?url=${encodeURIComponent(url)}&prompt=${encodeURIComponent(prompt)}`, {
-            responseType: 'stream',
-            validateStatus: () => true
-        });
+      const editApiUrl = `https://mahi-apis.onrender.com/api/edit?url=${encodeURIComponent(imageUrl)}&txt=${encodeURIComponent(prompt)}`;
+      const response = await axios.get(editApiUrl, { responseType: "arraybuffer" });
 
-        // Check if response is image
-        if (response.headers['content-type']?.startsWith('image/')) {
-            return api.sendMessage(
-                { attachment: response.data },
-                event.threadID,
-                (error, info) => {
-                    global.GoatBot.onReply.set(info.messageID, {
-                        commandName: commandName,
-                        type: "reply",
-                        messageID: info.messageID,
-                        author: event.senderID,
-                    });
-                },
-                event.messageID
-            );
-        }
+      const cacheFolderPath = path.join(__dirname, "cache");
+      if (!fs.existsSync(cacheFolderPath)) {
+        fs.mkdirSync(cacheFolderPath);
+      }
 
-        // If not image, try to parse as JSON
-        let responseData = '';
-        for await (const chunk of response.data) {
-            responseData += chunk.toString();
-        }
+      const imagePath = path.join(cacheFolderPath, `${Date.now()}_edited_image.jpg`);
+      fs.writeFileSync(imagePath, Buffer.from(response.data, "binary"));
 
-        const jsonData = JSON.parse(responseData);
-        if (jsonData?.response) {
-            return api.sendMessage(
-                jsonData.response,
-                event.threadID,
-                (error, info) => {
-                    global.GoatBot.onReply.set(info.messageID, {
-                        commandName: commandName,
-                        type: "reply",
-                        messageID: info.messageID,
-                        author: event.senderID,
-                    });
-                },
-                event.messageID
-            );
-        }
-
-        return api.sendMessage(
-            "❌ No valid response from the API",
-            event.threadID,
-            (error, info) => {
-                global.GoatBot.onReply.set(info.messageID, {
-                    commandName: commandName,
-                    type: "reply",
-                    messageID: info.messageID,
-                    author: event.senderID,
-                });
-            },
-            event.messageID
-        );
-
+      const stream = fs.createReadStream(imagePath);
+      message.reply({
+        body: `✅ | Image edited with prompt: "${prompt}"`,
+        attachment: stream
+      });
     } catch (error) {
-        console.error("Edit command error:", error);
-        return api.sendMessage(
-            "❌ Failed to process your request. Please try again later.",
-            event.threadID,
-            (error, info) => {
-                global.GoatBot.onReply.set(info.messageID, {
-                    commandName: commandName,
-                    type: "reply",
-                    messageID: info.messageID,
-                    author: event.senderID,
-                });
-            },
-            event.messageID
-        );
+      console.error("Error:", error);
+      message.reply("❌ | An error occurred while editing the image. Please try again later.");
     }
-}
-
-module.exports.onStart = async ({ api, event, args }) => {
-    if (!event.messageReply) {
-        return api.sendMessage(
-            "❌ Please reply to an image to edit it 😡.",
-            event.threadID,
-            event.messageID);
-    }
-    await handleEdit(api, event, args, this.config.name);
-};
-
-module.exports.onReply = async function ({ api, event, args }) {
-    if (event.type === "message_reply") {
-        await handleEdit(api, event, args, this.config.name);
-    }
+  }
 };
