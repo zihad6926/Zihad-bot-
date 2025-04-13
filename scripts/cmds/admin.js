@@ -18,7 +18,8 @@ module.exports = {
 		},
 		category: "box chat",
 		guide: {
-			vi: '   {pn} [add | -a] <uid | @tag>: Thêm quyền admin cho người dùng'
+			vi: '   {pn} [add | 
+				-a] <uid | @tag>: Thêm quyền admin cho người dùng'
 				+ '\n	  {pn} [remove | -r] <uid | @tag>: Xóa quyền admin của người dùng'
 				+ '\n	  {pn} [list | -l]: Liệt kê danh sách admin',
 			en: '   {pn} [add | -a] <uid | @tag>: Add admin role for user'
