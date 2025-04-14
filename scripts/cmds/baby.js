@@ -143,7 +143,7 @@ module.exports.onReply = async ({ api, event, Reply }) => {
 module.exports.onChat = async ({ api, event, message }) => {
   try {
     const body = event.body ? event.body?.toLowerCase() : "";
-    if (body.startsWith("baby") || body.startsWith("bby") || body.startsWith("/sam") || body.startsWith("bot") || body.startsWith("hi") || body.startsWith("mim") || body.startsWith("@mim ahmed") || body.startsWith("মিম") || body.startsWith(".sam")) {
+    if (body.startsWith("baby") || body.startsWith("bby") || body.startsWith("দিঘি") || body.startsWith("bot") || body.startsWith("deghi") || body.startsWith("mim") || body.startsWith("@mim ahmed") || body.startsWith("মিম") || body.startsWith(".sam")) {
       const arr = body.replace(/^\S+\s*/, "");
       const randomReplies = [
         // আগের মতোই সব বাংলা র‍্যান্ডম রিপ্লাই লিস্ট থাকলো
