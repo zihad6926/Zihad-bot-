@@ -29,7 +29,7 @@
     "whiteListIds": ["100067540204855"],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "nickNameBot": "𝖸𝗈𝗎𝗋 𝖻𝖺𝖻𝗒 😍ᯓᡣ𐭩",
+  "nickNameBot": "𝖸𝗈𝗎𝗋 𝖻𝖺𝖻𝗒. 😍ᯓᡣ𐭩",
   "prefix": "?",
   "database": {
     "type": "sqlite",
