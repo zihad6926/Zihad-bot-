@@ -21,14 +21,15 @@
     "61573966084307",
     "100063487970328",
     "100078769420993",
-    "61560846840238"
+    "61560846840238",
+    "61564517582850"
   ],
   "whiteListMode": {
     "enable": false,
     "whiteListIds": ["100067540204855"],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "nickNameBot": "মিম বেবি 😙",
+  "nickNameBot": "𝖸𝗈𝗎𝗋 𝖻𝖺𝖻𝗒 😍ᯓᡣ𐭩",
   "prefix": "?",
   "database": {
     "type": "sqlite",
