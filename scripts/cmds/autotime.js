@@ -4,7 +4,7 @@ module.exports.config = {
   name: "autotime",
   version: "1.0.0",
   hasPermssion: 0,
-  credits: "Boss Zihad",
+  credits: " Zihad",
   description: "Send message every 30 minutes automatically",
   commandCategory: "system",
   usages: "",
@@ -65,7 +65,7 @@ module.exports.onLoad = ({ api }) => {
 
   setInterval(() => {
     const now = moment().tz("Asia/Dhaka");
-    const formattedTime = now.format("hh:mm A"); // This will include AM/PM
+    const formattedTime = now.format("hh:mm A"); // AM/PM ফরম্যাট
 
     const message = timeMessages[formattedTime];
     if (message) {
@@ -75,5 +75,5 @@ module.exports.onLoad = ({ api }) => {
         api.sendMessage(fullMessage, threadID);
       }
     }
-  }, 60 * 1000); // Check every minute
+  }, 30 * 60 * 1000); // প্রতি ৩০ মিনিট পর পর চেক করবে
 };
