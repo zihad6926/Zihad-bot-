@@ -1,89 +1,97 @@
-const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
-const ytSearch = require("yt-search");
+const axios = require('axios');
+const yts = require("yt-search");
 
-const CACHE_FOLDER = path.join(__dirname, "cache");
+const baseApiUrl = async () => {
+    const base = await axios.get(
+        `https://raw.githubusercontent.com/Mostakim0978/D1PT0/refs/heads/main/baseApiUrl.json`
+    );
+    return base.data.api;
+};
 
-async function downloadAudio(videoId, filePath) {
-    const url = `https://audio-kshitiz-production.up.railway.app/download?id=${videoId}`;
-    const writer = fs.createWriteStream(filePath);
+(async () => {
+    global.apis = {
+        diptoApi: await baseApiUrl()
+    };
+})();
 
-    const response = await axios({
-        url,
-        method: "GET",
-        responseType: "stream",
-    });
-
-    return new Promise((resolve, reject) => {
-        response.data.pipe(writer);
-        writer.on("finish", resolve);
-        writer.on("error", reject);
-    });
-}
-
-async function fetchAudioFromReply(api, event, message) {
-    const attachment = event.messageReply.attachments[0];
-    if (!attachment || (attachment.type !== "video" && attachment.type !== "audio")) {
-        throw new Error("Please reply to a valid video or audio attachment.");
-    }
-
-    const shortUrl = attachment.url;
-    const audioRecResponse = await axios.get(`https://audio-recon-ahcw.onrender.com/kshitiz?url=${encodeURIComponent(shortUrl)}`);
-    return audioRecResponse.data.title;
-}
-
-async function fetchAudioFromQuery(query) {
-    const searchResults = await ytSearch(query);
-    if (searchResults && searchResults.videos && searchResults.videos.length > 0) {
-        return searchResults.videos[0].videoId;
-    } else {
-        throw new Error("No results found for the given query.");
-    }
-}
-
-async function handleAudioCommand(api, event, args, message) {
-    api.setMessageReaction("🕢", event.messageID, () => {}, true);
-
+async function getStreamFromURL(url, pathName) {
     try {
-        let videoId;
-        if (event.messageReply && event.messageReply.attachments && event.messageReply.attachments.length > 0) {
-            const title = await fetchAudioFromReply(api, event, message);
-            videoId = await fetchAudioFromQuery(title);
-        } else if (args.length > 0) {
-            const query = args.join(" ");
-            videoId = await fetchAudioFromQuery(query);
+        const response = await axios.get(url, {
+            responseType: "stream"
+        });
+        response.data.path = pathName;
+        return response.data;
+    } catch (err) {
+        throw err;
+    }
+}
+
+global.utils = {
+    ...global.utils,
+    getStreamFromURL: global.utils.getStreamFromURL || getStreamFromURL
+};
+
+function getVideoID(url) {
+    const checkurl = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))((\w|-){11})(?:\S+)?$/;
+    const match = url.match(checkurl);
+    return match ? match[1] : null;
+}
+
+const config = {
+    name: "sing",
+    author: "Mesbah Saxx",
+    credits: "Mesbah Saxx",
+    version: "1.2.0",
+    role: 0,
+    hasPermssion: 0,
+    description: "",
+    usePrefix: true,
+    prfix: true,
+    category: "media",
+    commandCategory: "media",
+    cooldowns: 5,
+    countDown: 5,
+};
+
+async function onStart({ api, args, event }) {
+    try {
+        let videoID;
+        const url = args[0];
+        let w;
+
+        if (url && (url.includes("youtube.com") || url.includes("youtu.be"))) {
+            videoID = getVideoID(url);
+            if (!videoID) {
+                await api.sendMessage("Invalid YouTube URL.", event.threadID, event.messageID);
+            }
         } else {
-            message.reply("Please provide a query or reply to a valid video/audio attachment.");
-            return;
+            const songName = args.join(' ');
+            w = await api.sendMessage(`Searching song "${songName}"...☣️ `, event.threadID);
+            const r = await yts(songName);
+            const videos = r.videos.slice(0, 50);
+
+            const videoData = videos[Math.floor(Math.random() * videos.length)];
+            videoID = videoData.videoId;
         }
 
-        const filePath = path.join(CACHE_FOLDER, `${videoId}.mp3`);
-        await downloadAudio(videoId, filePath);
+        const { data: { title, quality, downloadLink } } = await axios.get(`${global.apis.diptoApi}/ytDl3?link=${videoID}&format=mp3`);
 
-        const audioStream = fs.createReadStream(filePath);
-        message.reply({ body: `🎵 Here is your audio:`, attachment: audioStream });
-        api.setMessageReaction("✅", event.messageID, () => {}, true);
+        api.unsendMessage(w.messageID);
+        
+        const o = '.php';
+        const shortenedLink = (await axios.get(`https://tinyurl.com/api-create${o}?url=${encodeURIComponent(downloadLink)}`)).data;
 
-    } catch (error) {
-        console.error("Error:", error.message);
-        message.reply("An error occurred while processing your request.");
+        await api.sendMessage({
+            body: `🔖 - 𝚃𝚒𝚝𝚕𝚎: ${title}\n✨ - 𝚀𝚞𝚊𝚕𝚒𝚝𝚢: ${quality}\n\n📥 - 𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍 𝙻𝚒𝚗𝚔: ${shortenedLink}`,
+            attachment: await global.utils.getStreamFromURL(downloadLink, title+'.mp3')
+        }, event.threadID, event.messageID);
+    } catch (e) {
+        api.sendMessage(e.message || "An error occurred.", event.threadID, event.messageID);
     }
 }
 
 module.exports = {
-    config: {
-        name: "sing",
-        version: "1.0",
-        author: "Vex_Kshitiz",
-        countDown: 10,
-        role: 0,
-        shortDescription: "Download and send audio from YouTube.",
-        longDescription: "Download audio from YouTube based on a query or attachment.",
-        category: "music",
-        guide: "{p}audio [query] or reply to a video/audio attachment",
-    },
-    onStart: function ({ api, event, args, message }) {
-        return handleAudioCommand(api, event, args, message);
-    },
+    config,
+    onStart,
+    run: onStart
 };
