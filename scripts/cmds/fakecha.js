@@ -3,7 +3,7 @@ module.exports = {
     name: "fakechat",
     aliases: ["fchat","fakec"],
     version: "1.0",
-    role: 1,
+    role: 0,
     premium: true,
     author: "Dipto",
     Description: "Get a fake chat of user",
