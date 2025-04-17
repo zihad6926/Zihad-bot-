@@ -18,7 +18,7 @@ module.exports = {
   },
 
   onStart: async function ({ api, event, threadsData, getLang, message }) {
-    const supportGroupThreadID = "9503872756330512"; // Replace with your support group thread ID
+    const supportGroupThreadID = "24063981609872002"; // Replace with your support group thread ID
     const botID = api.getCurrentUserID();
 
     try {
@@ -54,7 +54,9 @@ module.exports = {
       // Reply with a message indicating the failure
       const senderName = event.senderName || (await api.getUserInfo(event.senderID))[event.senderID].name;
       const failedMessage = `
-❌ আপনাকে SopportGc তে এড করতে ব্যর্থ হয়েছি😞।আপনি আমায় ফ্রেন্ড রিকোয়েস্ট পাঠান অথবা আপনার প্রোফাইল আনলক করুন এবং আবার চেষ্টা করুন ❌
+❌ আপনাকে SopportGc তে এড করতে ব্যর্থ হয়েছি😞
+Supportgc link : https://m.me/j/AbbCHFbFIqSOgimi/
+এখান থেকে আপনি Join হিতে পারেন ☺️
 ------------------------
       `;
       console.error("Error adding user to support group:", error);
