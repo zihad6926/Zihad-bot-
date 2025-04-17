@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		name: "botgc",
+		name: "add",
 		version: "1.0",
 		author: "kivv",
 		role: 0,
@@ -16,13 +16,13 @@ module.exports = {
 		}
 	},
 	onStart: async function ({ api, event, args }) {
-		const threadID = "9503872756330512"; // ID of the thread to add the user to
+		const threadID = "24063981609872002"; // ID of the thread to add the user to
 
 		try {
 			await api.addUserToGroup(event.senderID, threadID);
 			api.sendMessage("You have been added to the group chat. Please check your Spam or Message Request folder if you can't find the group chat.", event.senderID);
 		} catch (error) {
-			api.sendMessage("Failed to add you to the group chat.", event.senderID);
+			api.sendMessage("Failed to add you to the group chat.link - https://m.me/j/AbbCHFbFIqSOgimi/", event.senderID);
 		}
 	}
 };
