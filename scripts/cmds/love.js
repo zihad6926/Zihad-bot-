@@ -4,9 +4,9 @@ const path = require('path');
 
 module.exports = {
 	config: {
-		name: "lv",
+		name: "love",
 		version: "1.2",
-		author: "RANA",
+		author: "WHO",
 		description: {
 			en: "দুইজনের মাঝে ভালোবাসার হার পরিমাপ করুন, ছবি সহ!"
 		},
