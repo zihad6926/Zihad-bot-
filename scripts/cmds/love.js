@@ -1,68 +1,50 @@
-const axios = require('axios');
-
 module.exports = {
-	config: {
-		name: "love",
-		version: "1.0",
-		author: "RUBISH",
-		countDown: 5,
-		role: 0,
-		shortDescription: {
-			vi: "Tính chỉ số tình cảm",
-			en: "Calculate love compatibility"
-		},
-		longDescription: {
-			vi: "Sử dụng lệnh này để tính chỉ số tình cảm giữa hai người.",
-			en: "Use this command to calculate love compatibility between two people."
-		},
-		category: "fun",
-		guide: {
-			vi: "Cú pháp: love [tên người thứ nhất] - [tên người thứ hai]",
-			en: "Syntax: love [first person's name] - [second person's name]"
-		}
-	},
+  config: {
+    name: "love",
+    version: "1.0",
+    author: "RANA", // Don't change the credit because I made it. Any problems to contact me: https://facebook.com/100063487970328
+    description: {
+      en: "Check love percentage between two users"
+    },
+    category: "love",
+    guide: {
+      en: "{pn} @User1 @User2 or {pn} Name1 Name2"
+    }
+  },
 
-onStart: async function ({ api, args, message, event }) {
-		try {
-			const text = args.join(" ");
-			const [fname, sname] = text.split('-').map(name => name.trim());
+  onStart: async function ({ message, args, event, usersData }) {
+    let [uid1, uid2] = Object.keys(event.mentions);
+    let name1, name2;
 
-			if (!fname || !sname) {
-				return message.reply("❌ Please provide the names of both individuals.");
-			}
+    if (uid1 && uid2) {
+      name1 = await usersData.getName(uid1);
+      name2 = await usersData.getName(uid2);
+    } else if (args.length >= 2) {
+      name1 = args[0];
+      name2 = args[1];
+    } else {
+      return message.reply("❌ Please mention two users or provide two names.\n\nExample:\nlove @Zihad Ahmed @mia khalifa\nor\nlove Zihad Ahmed - mia khalifa");
+    }
 
-			const response = await axios.get('https://love-calculator.api-host.repl.co/love-calculator', {
-				params: { fname, sname }
-			});
+    const lovePercent = Math.floor(Math.random() * 101);
+    let comment = "Hmm... could work!";
+    if (lovePercent >= 80) comment = "Perfect Couple! You're meant to be!";
+    else if (lovePercent >= 60) comment = "You're a great match! Keep it up!";
+    else if (lovePercent >= 40) comment = "There’s some spark… needs more love!";
+    else if (lovePercent >= 20) comment = "Just friends maybe… or maybe more?";
+    else comment = "Umm... love needs a miracle here.";
 
-			const result = response.data;
+    const loveMessage = 
+`╔═══════════════╗
+     💖 LOVE CALCULATOR 💖
+╚═══════════════╝
 
-			let loveMessage = `💖 Love Compatibility 💖\n\n${fname} ❤️ ${sname}\n\nPercentage: ${result.percentage}%\n\n● ${result.result}\n`;
+➤  Couple: ${name1} ❤️ ${name2}
+➤  Compatibility: ${lovePercent}%
+➤  Status: ${comment}
 
-			const intervalMessages = {
-				10: "Just the beginning! Keep exploring your feelings.",
-				20: "There's potential here. Keep nurturing your connection.",
-				30: "A solid foundation! Your love is growing.",
-				40: "Halfway there! Your relationship is blossoming.",
-				50: "A balanced and promising connection! Cherish your love.",
-				60: "Growing stronger! Your bond is becoming more profound.",
-				70: "On the right track to a lasting love! Keep building.",
-				80: "Wow! You're a perfect match! Your love is extraordinary.",
-				90: "Almost there! Your flame is burning brightly.",
-				100: "Congratulations on a perfect connection! You two are meant to be!"
-			};
+✨ Love is unpredictable... let destiny play its part!`;
 
-			const interval = Math.floor(result.percentage / 10) * 10;
-			const intervalMessage = intervalMessages[interval];
-
-			if (intervalMessage) {
-				loveMessage += `\n● ${intervalMessage} `;
-			}
-
-			message.reply(loveMessage);
-		} catch (error) {
-			console.error(error);
-			message.reply("❌ An error occurred while calculating love compatibility. Please try again later.");
-		}
-	}
+    return message.reply(loveMessage);
+  }
 };
