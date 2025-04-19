@@ -1,41 +1,34 @@
 module.exports = {
-	config: {
-		name: "listbox",
-		aliases: [],
-		author: "kshitiz",
-		version: "2.0",
-		cooldowns: 5,
-		role: 0,
-		shortDescription: {
-			en: "List all group chats the bot is in."
-		},
-		longDescription: {
-			en: "Use this command to list all group chats the bot is currently in."
-		},
-		category: "owner",
-		guide: {
-			en: "{p}{n} "
-		}
-	},
-	onStart: async function ({ api, event }) {
-		try {
-			const groupList = await api.getThreadList(100, null, ['INBOX']);
+  config: {
+    name: "listbox",
+    aliases: [],
+    author: "Zihad",
+    version: "2.0",
+    cooldowns: 5,
+    role: 0,
+    shortDescription: {
+      en: "Show total number of group chats"
+    },
+    longDescription: {
+      en: "Shows how many group chats the bot is currently in."
+    },
+    category: "owner",
+    guide: {
+      en: "{p}{n}"
+    }
+  },
 
+  onStart: async function ({ api, event }) {
+    try {
+      const groupList = await api.getThreadList(100, null, ['INBOX']);
+      const filteredGroups = groupList.filter(group => group.isGroup && group.threadName !== null);
+      const totalGroups = filteredGroups.length;
 
-			const filteredList = groupList.filter(group => group.threadName !== null);
-
-			if (filteredList.length === 0) {
-
-				await api.sendMessage('No group chats found.', event.threadID);
-			} else {
-				const formattedList = filteredList.map((group, index) =>
-					`│${index + 1}. ${group.threadName}\n│𝐓𝐈𝐃: ${group.threadID}`
-				);
-				const message = `╭─╮\n│𝐋𝐢𝐬𝐭 𝐨𝐟 𝐠𝐫𝐨𝐮𝐩 𝐜𝐡𝐚𝐭𝐬:\n${formattedList.map(line => `${line}`).join("\n")}\n╰───────────ꔪ`;
-				await api.sendMessage(message, event.threadID, event.messageID);
-			}
-		} catch (error) {
-			console.error("Error listing group chats", error);
-		}
-	},
+      const message = `╭─╮\n│ 𝐁𝐨𝐭 𝐢𝐬 𝐧𝐨𝐰 𝐢𝐧 𝐭𝐨𝐭𝐚𝐥 ${totalGroups} 𝐠𝐫𝐨𝐮𝐩𝐬.\n╰───────────────ꔪ`;
+      await api.sendMessage(message, event.threadID, event.messageID);
+    } catch (error) {
+      console.error("Error getting group list:", error);
+      api.sendMessage("❌ Failed to get group count.", event.threadID, event.messageID);
+    }
+  },
 };
