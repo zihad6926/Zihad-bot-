@@ -41,7 +41,7 @@ module.exports = {
 
     const url = linkMatch[0];
 
-    api.setMessageReaction("😘", event.messageID, () => {}, true);
+    api.setMessageReaction("🟢", event.messageID, () => {}, true);
 
     try {
       const res = await axios.get(`http://65.109.80.126:20409/alldown?url=${encodeURIComponent(url)}`);
@@ -54,7 +54,7 @@ module.exports = {
       const highTinyUrl = await getTinyUrl(high);
       const lowTinyUrl = await getTinyUrl(low);
 
-      const msg = `╔════ஜ۩۞۩ஜ═══╗\n            MIM-BOT🫠\n ╚════ஜ۩۞۩ஜ═══╝\n\n🎥 𝐕𝐢𝐝𝐞𝐨 𝐓𝐢𝐭𝐥𝐞 : ${title}\n\n📄 𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐭𝐢𝐨𝐧 : ${description || "No description available."}\n\n📥 𝐓𝐢𝐧𝐲𝐮𝐫𝐥 :\n- [𝐇𝐢𝐠𝐡𝐭 𝐐𝐮𝐚𝐥𝐢𝐭𝐲]\n(${highTinyUrl})\n- [𝐋𝐨𝐰 𝐐𝐮𝐚𝐥𝐢𝐭𝐲]\n(${lowTinyUrl})\n\n🎬 𝐄𝐧𝐣𝐨𝐲 𝐭𝐡𝐞 𝐕𝐢𝐝𝐞𝐨 🎀`;
+      const msg = `╔════ஜ۩۞۩ஜ═══╗\n            MIM-BOT🫠\n ╚════ஜ۩۞۩ஜ═══╝\n\n🎥 𝐕𝐢𝐝𝐞𝐨 𝐓𝐢𝐭𝐥𝐞 : ${title}\n𝐓𝐢𝐧𝐲𝐮𝐫𝐥 [𝐇𝐢𝐠𝐡𝐭 𝐐𝐮𝐚𝐥𝐢𝐭𝐲]\n(${highTinyUrl})\n\n🎬 𝐄𝐧𝐣𝐨𝐲 𝐭𝐡𝐞 𝐕𝐢𝐝𝐞𝐨 🎀`;
 
       const videoUrl = high || low; // Use high link, fallback to low if not available
 
