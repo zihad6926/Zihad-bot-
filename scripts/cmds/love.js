@@ -4,7 +4,7 @@ const path = require('path');
 
 module.exports = {
   config: {
-    name: "love",
+    name: "lv",
     version: "2.1",
     author: "OpenSource Edition",
     description: {
